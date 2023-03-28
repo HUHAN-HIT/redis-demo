@@ -1,8 +1,12 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CreateUserRequestBody {
+    @JsonProperty("user_name")
     private String userName;
 
+    @JsonProperty("password")
     private String password;
 
     public String getUserName() {
