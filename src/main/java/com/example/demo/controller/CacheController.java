@@ -3,11 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.entity.CreateUserRequestBody;
 import com.example.demo.entity.InfoEntity;
 import com.example.demo.helper.RedisHelper;
-import com.sun.javafx.collections.UnmodifiableObservableMap;
-import io.lettuce.core.Limit;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -43,8 +40,8 @@ public class CacheController {
         return null;
     }
 
-    @GetMapping("/user/{user_id}")
-    public Flux<Map<String, InfoEntity>> showUser(@Param("user_id")String userId) {
+    @GetMapping("/user/{userId}")
+    public Flux<Map<String, InfoEntity>> showUser(@PathVariable String userId) {
         Map<String, InfoEntity> map = new HashMap<>();
         return redisHelper.getCacheOrLoad("userId", () -> Mono.error(new Exception("not exist this user")))
             .flatMapMany(Flux::fromIterable).take(1)
@@ -54,8 +51,8 @@ public class CacheController {
             });
     }
 
-    @DeleteMapping("/user/{user_id}")
-    public Mono<Void> deleteUser(@Param("user_id")String userId) {
+    @DeleteMapping("/user/{userId}")
+    public Mono<Void> deleteUser(@PathVariable String userId) {
         return redisHelper.delete(userId).then();
     }
 }
