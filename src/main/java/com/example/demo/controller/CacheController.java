@@ -38,11 +38,15 @@ public class CacheController {
                 }));
     }
 
+    @GetMapping("/internal/user")
+    public Flux<Map<String, InfoEntity>> getUserInternal() {
+        return null;
+    }
+
     @GetMapping("/user/{user_id}")
     public Flux<Map<String, InfoEntity>> showUser(@Param("user_id")String userId) {
         Map<String, InfoEntity> map = new HashMap<>();
-        return redisHelper.getCacheOrLoad("userId",
-            () -> Mono.just(Collections.singletonList(new InfoEntity().withName(userId).withPassword("123456"))))
+        return redisHelper.getCacheOrLoad("userId", () -> Mono.error(new Exception("not exist this user")))
             .flatMapMany(Flux::fromIterable).take(1)
             .map(info -> {
                 map.put("user", info);
